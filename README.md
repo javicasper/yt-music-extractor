@@ -1,6 +1,6 @@
 # YouTube Music & Deezer ISRC Extractor
 
-Este proyecto es una API Flask que utiliza la **YouTube Music API** y la **Deezer API** para buscar canciones, playlists y extraer información como el código ISRC (International Standard Recording Code).
+Este proyecto es una API Flask que utiliza la **YouTube Music API** (implementada con la librería [ytmusicapi](https://github.com/sigma67/ytmusicapi)) y la **Deezer API** para buscar canciones, playlists y extraer información como el código ISRC (International Standard Recording Code).
 
 ## Características
 
@@ -19,40 +19,40 @@ Este proyecto es una API Flask que utiliza la **YouTube Music API** y la **Deeze
 ### Localmente
 
 1. **Clona el repositorio**:
-   ```bash
-   git clone <repo-url>
-   cd <repo-folder>
-   ```
+  ```bash
+  git clone <repo-url>
+  cd <repo-folder>
+  ```
 
 2. **Crea un entorno virtual**:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # En Windows: .\\venv\\Scripts\\activate
-   ```
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate  # En Windows: .\\venv\\Scripts\\activate
+  ```
 
 3. **Instala las dependencias**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+  ```bash
+  pip install -r requirements.txt
+  ```
 
 4. **Ejecuta la aplicación**:
-   ```bash
-   flask run
-   ```
+  ```bash
+  flask run
+  ```
 
-   La aplicación estará disponible en `http://localhost:5000`.
+  La aplicación estará disponible en `http://localhost:5000`.
 
 ---
 
 ### Usando Docker
 
 1. **Construye y ejecuta el contenedor**:
-   ```bash
-   docker-compose up --build
-   ```
+  ```bash
+  docker-compose up --build
+  ```
 
 2. **Accede a la aplicación**:
-   La API estará disponible en `http://localhost:5000`.
+  La API estará disponible en `http://localhost:5000`.
 
 ---
 
