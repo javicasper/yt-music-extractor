@@ -65,7 +65,6 @@ def buscar_cancion():
                     formatted_result["artist"] = ", ".join(artist['name'] for artist in result['artists'])
 
                 if result['resultType'] == 'song':
-                    print("result", result)
                     formatted_result["title"] = result.get('title', 'Sin título')
                     # formatted_result["album"] = result.get('album', {}).get('name', 'Sin álbum')
                     formatted_result["videoId"] = result.get('videoId', 'No disponible')
