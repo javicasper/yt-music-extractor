@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "pip" # Cambia por npm, yarn, etc.
-    directory: "/" # Carpeta donde está tu archivo requirements.txt
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
-      interval: "daily" # Frecuencia de comprobación
+      interval: "monthly"
