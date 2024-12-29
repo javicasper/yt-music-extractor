@@ -2,8 +2,6 @@ services:
   ytextractor:
     container_name: ytextractor
     build: .
-    ports:
-      - "5000:5000"
     volumes:
       - .:/app
     environment:
