@@ -58,7 +58,6 @@ def buscar_cancion():
         for result in search_results:
             if result['resultType'] in ['song', 'video', 'album', 'artist', 'playlist']:
                 formatted_result = {
-                    "title": result.get('title', 'Sin título'),
                     "resultType": result['resultType'],
                 }
 
@@ -66,14 +65,22 @@ def buscar_cancion():
                     formatted_result["artist"] = ", ".join(artist['name'] for artist in result['artists'])
 
                 if result['resultType'] == 'song':
-                    formatted_result["album"] = result.get('album', {}).get('name', 'Sin álbum')
+                    formatted_result["title"] = result.get('title', 'Sin título')
+                    # formatted_result["album"] = result.get('album', {}).get('name', 'Sin álbum')
                     formatted_result["videoId"] = result.get('videoId', 'No disponible')
                 elif result['resultType'] == 'album':
+                    formatted_result["albumId"] = result.get('browseId', 'No disponible')
+                    formatted_result["album"] = result.get('title', 'Sin título')
                     formatted_result["browseId"] = result.get('browseId', 'No disponible')
                 elif result['resultType'] == 'artist':
                     formatted_result["artistId"] = result.get('browseId', 'No disponible')
+                    formatted_result["artist"] = result.get('artist', 'Sin nombre')
+                    formatted_result["shuffleId"] = result.get('shuffleId', 'No disponible')
+                    formatted_result["radioId"] = result.get('radioId', 'No disponible')
                 elif result['resultType'] == 'playlist':
                     formatted_result["playlistId"] = result.get('browseId', 'No disponible')
+                    formatted_result["title"] = result.get('title', 'Sin título')
+                    formatted_result["thumbnail"] = result['thumbnails'][-1]['url'] if result.get('thumbnails') else None
 
                 formatted_results.append(formatted_result)
 
@@ -91,9 +98,11 @@ def buscar_cancion():
 @app.route('/playlist/<string:playlist_id>', methods=['GET'])
 def obtener_playlist(playlist_id):
     try:
+        use_isrc = request.args.get('isrc', 'false').lower() == 'true'
         # Obtener los datos de la playlist
         playlist_data = yt_music.get_playlist(playlist_id)
-
+        print(playlist_data)
+        
         # Formatear los datos
         playlist_info = {
             "title": playlist_data['title'],
@@ -102,19 +111,21 @@ def obtener_playlist(playlist_id):
             "tracks": []
         }
 
-        # Limitar la búsqueda al primer track
-        if playlist_data['tracks']:
-            track = playlist_data['tracks'][0]  # Solo el primer track
-            
+        # Procesar cada canción en la playlist
+        for track in playlist_data['tracks']:
             # Verificar si el campo 'album' existe y no es None
             album = track.get('album')
             album_name = album['name'] if album else 'Sin álbum'
 
             # Verificar si hay artistas
-            artist_name = track['artists'][0]['name'] if track.get('artists') else "Artista desconocido"
+            artist_name = (
+                track['artists'][0]['name'] if track.get('artists') else "Artista desconocido"
+            )
 
-            # Obtener el ISRC desde Deezer
-            isrc = buscar_isrc_en_deezer(track.get('title', 'Sin título'), artist_name, album_name)
+            if use_isrc:
+                # Buscar el ISRC en Deezer
+                isrc = buscar_isrc_en_deezer(track['title'], artist_name, album_name)
+                track['isrc'] = isrc
 
             # Añadir la canción al JSON de respuesta
             playlist_info["tracks"].append({
@@ -122,7 +133,7 @@ def obtener_playlist(playlist_id):
                 "artist": artist_name,
                 "album": album_name,
                 "videoId": track.get('videoId', 'No disponible'),
-                "isrc": isrc
+                "isrc": track.get('isrc', '')
             })
 
         # Devolver la respuesta como JSON
@@ -131,6 +142,7 @@ def obtener_playlist(playlist_id):
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/user_playlists', methods=['GET'])
 def obtener_playlists_usuario():

@@ -5,8 +5,8 @@ Este proyecto es una API Flask que utiliza la **YouTube Music API** y la **Deeze
 ## Características
 
 - **Búsqueda de canciones, videos, álbumes, artistas y playlists** en YouTube Music.
-- **Extracción del ISRC** de canciones utilizando la API de Deezer.
 - **Endpoints para manejar playlists y búsquedas personalizadas**.
+- Opción para incluir ISRC al solicitar detalles de una playlist.
 
 ## Requisitos
 
@@ -74,15 +74,16 @@ curl "http://localhost:5000/search?q=sofia%20gabanna&filter=songs"
 ---
 
 ### `/playlist/<playlist_id>`
-**Descripción**: Obtiene detalles de una playlist en YouTube Music, incluyendo el ISRC de las canciones.
+**Descripción**: Obtiene detalles de una playlist en YouTube Music, con opción de incluir el ISRC de las canciones.
 
 - **Método**: `GET`
 - **Parámetros**:
   - `playlist_id`: (requerido) ID de la playlist.
+  - `isrc`: (opcional) Si se establece como `true`, intenta buscar el ISRC de cada canción en Deezer.
 
 **Ejemplo**:
 ```bash
-curl "http://localhost:5000/playlist/PLfpNc9SrNdDDvb10-w_RunX9Pq0xJvSBq"
+curl "http://localhost:5000/playlist/PLfpNc9SrNdDDvb10-w_RunX9Pq0xJvSBq?isrc=true"
 ```
 
 ---
