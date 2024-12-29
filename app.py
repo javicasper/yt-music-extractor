@@ -5,7 +5,7 @@ import requests
 app = Flask(__name__)
 
 # Inicializar la API de YouTube Music
-yt_music = YTMusic('browser.json')
+yt_music = YTMusic('browser.json', language='es')
 
 # Función para buscar el ISRC en Deezer
 def buscar_isrc_en_deezer(titulo, artista, album):
@@ -46,7 +46,7 @@ def buscar_cancion():
             return jsonify({"error": "Debe proporcionar un parámetro 'q' para la búsqueda."}), 400
 
         # Realizar la búsqueda en YouTube Music con filtro si se proporciona
-        search_results = yt_music.search(query, filter=filter_type)
+        search_results = yt_music.search(query, filter=filter_type, ignore_spelling=True)
 
         # Si no hay resultados y se usó un filtro, intentar una búsqueda general
         if not search_results and filter_type:
@@ -65,9 +65,13 @@ def buscar_cancion():
                     formatted_result["artist"] = ", ".join(artist['name'] for artist in result['artists'])
 
                 if result['resultType'] == 'song':
+                    print("result", result)
                     formatted_result["title"] = result.get('title', 'Sin título')
                     # formatted_result["album"] = result.get('album', {}).get('name', 'Sin álbum')
                     formatted_result["videoId"] = result.get('videoId', 'No disponible')
+                    formatted_result["channel"] = result.get('channel', 'No disponible')
+                    formatted_result["duration"] = result.get('duration', 'No disponible')
+                    formatted_result["thumbnails"] = result['thumbnails'][-1]['url'] if result.get('thumbnails') else None
                 elif result['resultType'] == 'album':
                     formatted_result["albumId"] = result.get('browseId', 'No disponible')
                     formatted_result["album"] = result.get('title', 'Sin título')
