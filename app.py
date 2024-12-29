@@ -19,7 +19,6 @@ def buscar_isrc_en_deezer(titulo, artista, album):
         response = requests.get(url)
         if response.status_code == 200:
             resultados = response.json()
-            print(query)
             if resultados['data']:
                 for cancion in resultados['data']:
                     # Verificar coincidencias estrictas en título y artista
@@ -43,7 +42,6 @@ def buscar_cancion():
         # Obtener los parámetros de consulta y filtro
         query = request.args.get('q', '')
         filter_type = request.args.get('filter', 'songs')  # Valor por defecto: None
-        print(f"Buscando: {query} con filtro: {filter_type}")
         if not query:
             return jsonify({"error": "Debe proporcionar un parámetro 'q' para la búsqueda."}), 400
 
